@@ -2,7 +2,7 @@ import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threej
 import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/loaders/GLTFLoader.js';
 import { GUI } from 'https://threejsfundamentals.org/threejs/../3rdparty/dat.gui.module.js';
-// ver 007
+
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -31,16 +31,14 @@ const loader = new GLTFLoader();
 let mixer;
 let modelA, modelB, modelC, modelD;
 const modelAPos = { x: 0, y: 0, z: 0 };
-const modelARot = { y: 0 };
+const modelARot = { y: 0 }; 
 const modelBPos = { x: 0, y: 0.945, z: -0.14 };
 const modelBRot = { x: 0 };
-const modelCPos = { x: 0, y: 0.882, z: 0.4515 };
+const modelCPos = { x: 0, y: 0.882 , z: 0.4515 };
 const modelCRot = { x: 0 };
-const modelDPos = { x: 0, y: 0, z: -1.3 };
+const modelDPos = { x: 0, y: 0 , z: -1.3 };
 const modelDRot = { x: 0 };
 
-let allObjectsVisibleOnScreen = false;
-let sBoundingBoxVisible = true;
 
 loader.load("./assets/Arm_024a.gltf", function (gltf) {
   modelA = gltf.scene;
@@ -59,15 +57,14 @@ loader.load("./assets/Arm_024b.gltf", function (gltf) {
 loader.load("./assets/Arm_024c.gltf", function (gltf) {
   modelC = gltf.scene;
   modelC.position.set(modelCPos.x, modelCPos.y, modelCPos.z);
-  modelB.add(modelC);
+  modelB.add(modelC); 
   modelC.rotation.x = modelCRot.x;
 });
-
 
 loader.load("./assets/Arm_024d.gltf", function (gltf) {
   modelD = gltf.scene;
   modelD.position.set(modelDPos.x, modelDPos.y, modelDPos.z);
-  modelC.add(modelD);
+  modelC.add(modelD); 
   modelD.rotation.x = modelDRot.x;
 });
 
@@ -81,62 +78,54 @@ function render() {
   if (modelC) {
     modelC.rotation.x = modelCRot.x;
     if (modelD) {
-      modelD.rotation.x = -modelCRot.x - modelBRot.x;
+      modelD.rotation.x = -modelCRot.x -modelBRot.x ; 
     }
   }
 
   renderer.render(scene, camera);
 }
 
+
 const gui = new GUI();
-const folderA = gui.addFolder("Arm A");
-folderA.add(modelAPos, 'x', -2, 2).name('xxx').onChange(() => {
+gui.add({refresh: () => {window.location.reload();}, }, 'refresh').name('Refresh').domElement.parentElement.style.order = -1;
+
+gui.add(modelAPos, 'x', -2, 2).name('좌우').onChange(() => {
   if (modelA) {
     modelA.position.x = modelAPos.x;
   }
 });
-folderA.add(modelAPos, 'y', 0, 2).name('yyy').onChange(() => {
+gui.add(modelAPos, 'y', 0, 2).name('높이').onChange(() => {
   if (modelA) {
     modelA.position.y = modelAPos.y;
   }
 });
-folderA.add(modelAPos, 'z', -2, 2).name('zzz').onChange(() => {
+gui.add(modelAPos, 'z', -2, 2).name('앞뒤').onChange(() => {
   if (modelA) {
     modelA.position.z = modelAPos.z;
   }
 });
-folderA.add(modelARot, 'y', -Math.PI, Math.PI).name('rrr').onChange(() => {
+gui.add(modelARot, 'y', -Math.PI, Math.PI).name('회전').onChange(() => {
   if (modelA) {
     modelA.rotation.y = modelARot.y;
   }
 });
 
-const folderB = gui.addFolder("Arm B");
-folderB.add(modelBRot, 'x', -1, 1).name('rrr').onChange(() => {
+gui.add(modelBRot, 'x', -1, 1).name('관절B').onChange(() => {
   if (modelB) {
     modelB.rotation.x = modelBRot.x;
   }
 });
 
-const folderC = gui.addFolder("Arm C");
-folderC.add(modelCRot, 'x', -0.5, 0.5).name('rrr').onChange(() => {
+gui.add(modelCRot, 'x', -0.5, 0.5).name('관절C').onChange(() => {
   if (modelC) {
     modelC.rotation.x = modelCRot.x;
   }
 });
 
-const folderD = gui.addFolder("Arm D");
-folderD.add(modelDRot, 'x', -0, 0).name('rrr').onChange(() => {
-  if (modelD) {
-    modelD.rotation.x = modelDRot.x;
-  }
-});
-
-const folderDebug = gui.addFolder("Debug");
-folderDebug.add({ dumpObjectsVisibleOnScreen: function () { console.log(allObjectsVisibleOnScreen); } }, 'dumpObjectsVisibleOnScreen').name('dump').listen();
-folderDebug.add({ dumpSBBVisible: function () { console.log(sBoundingBoxVisible); } }, 'dumpSBBVisible').name('dump').listen();
-
 render();
+
+
+
 
 function animate() {
   requestAnimationFrame(animate);
@@ -149,11 +138,9 @@ function animate() {
     // Update modelD rotation based on modelB and modelC rotation
     modelD.rotation.x = -modelCRot.x - modelBRot.x;
 
-
     // Render the scene
     renderer.render(scene, camera);
-
-  }
+  } 
 }
 
 animate();
