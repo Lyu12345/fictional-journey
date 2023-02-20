@@ -29,97 +29,64 @@ scene.add(grid);
 
 const loader = new GLTFLoader();
 let mixer;
-// let model;
-// let modelA, modelB, modelC;
 let modelA, modelB, modelC, modelD;
 const modelAPos = { x: 0, y: 0, z: 0 };
-const modelARot = { y: 0 }; 
+const modelARot = { y: 0 };
 const modelBPos = { x: 0, y: 0.945, z: -0.14 };
 const modelBRot = { x: 0 };
-const modelCPos = { x: 0, y: 0.882 , z: 0.4515 };
+const modelCPos = { x: 0, y: 0.882, z: 0.4515 };
 const modelCRot = { x: 0 };
-const modelDPos = { x: 0, y: 0 , z: -1.3 };
+const modelDPos = { x: 0, y: 0, z: -1.3 };
 const modelDRot = { x: 0 };
+
+let allObjectsVisibleOnScreen = false;
+let sBoundingBoxVisible = true;
 
 loader.load("./assets/Arm_024a.gltf", function (gltf) {
   modelA = gltf.scene;
   modelA.position.set(modelAPos.x, modelAPos.y, modelAPos.z);
   scene.add(modelA);
-//   const mixerA = new THREE.AnimationMixer(modelA);
-//   mixerA.clipAction(gltf.animations[1]).play();
 });
 
-  // Add Arm_023b.glb as a child of Arm_023a.glb
+// Add Arm_023b.glb as a child of Arm_023a.glb
 loader.load("./assets/Arm_024b.gltf", function (gltf) {
   modelB = gltf.scene;
   modelB.position.set(modelBPos.x, modelBPos.y, modelBPos.z);
-  // scene.add(modelB);  // 이걸
-  modelA.add(modelB);   // 이렇게 해줘야 자식 설정이 된다.
-  // const mixerB = new THREE.AnimationMixer(modelB);
-  // mixerB.clipAction(gltf.animations[1]).play();
-
-  // directly modify position and rotation of modelB
+  modelA.add(modelB);
   modelB.rotation.x = modelBRot.x;
-  
 });
 
 loader.load("./assets/Arm_024c.gltf", function (gltf) {
   modelC = gltf.scene;
   modelC.position.set(modelCPos.x, modelCPos.y, modelCPos.z);
-  modelB.add(modelC); 
-  // const mixerC = new THREE.AnimationMixer(modelC);
-  // mixerC.clipAction(gltf.animations[1]).play();
+  modelB.add(modelC);
   modelC.rotation.x = modelCRot.x;
 });
+
 
 loader.load("./assets/Arm_024d.gltf", function (gltf) {
   modelD = gltf.scene;
   modelD.position.set(modelDPos.x, modelDPos.y, modelDPos.z);
-  modelC.add(modelD); 
-  // const mixerD = new THREE.AnimationMixer(modelD);
-  // mixerD.clipAction(gltf.animations[1]).play();
+  modelC.add(modelD);
   modelD.rotation.x = modelDRot.x;
 });
 
 const clock = new THREE.Clock();
-
-// On window resize, adjust camera aspect ratio and renderer size
-window.addEventListener('resize', function () {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-
-// function render() {
-//   requestAnimationFrame(render);
-//   var delta = clock.getDelta();
-//   if (mixer != null) mixer.update(delta);
-//   // if (model) {
-//   //   model.rotation.y = modelRot.y;
-//   // }
-//   renderer.render(scene, camera);
-// }
 
 function render() {
   requestAnimationFrame(render);
   var delta = clock.getDelta();
   if (mixer != null) mixer.update(delta);
 
-  // rotate modelC but not modelD
   if (modelC) {
     modelC.rotation.x = modelCRot.x;
     if (modelD) {
-      modelD.rotation.x = -modelCRot.x -modelBRot.x ; 
-      modelD.rotation.x = -modelCRot.x -modelBRot.x ; // negate the rotation of modelC
-      
+      modelD.rotation.x = -modelCRot.x - modelBRot.x;
     }
   }
 
   renderer.render(scene, camera);
 }
-
-
 
 const gui = new GUI();
 const folderA = gui.addFolder("Arm A");
@@ -158,10 +125,18 @@ folderC.add(modelCRot, 'x', -0.5, 0.5).name('rrr').onChange(() => {
   }
 });
 
+const folderD = gui.addFolder("Arm D");
+folderD.add(modelDRot, 'x', -0, 0).name('rrr').onChange(() => {
+  if (modelD) {
+    modelD.rotation.x = modelDRot.x;
+  }
+});
 
+const folderDebug = gui.addFolder("Debug");
+folderDebug.add({ dumpObjectsVisibleOnScreen: function () { console.log(allObjectsVisibleOnScreen); } }, 'dumpObjectsVisibleOnScreen').name('dump').listen();
+folderDebug.add({ dumpSBBVisible: function () { console.log(sBoundingBoxVisible); } }, 'dumpSBBVisible').name('dump').listen();
 
 render();
-
 
 function animate() {
   requestAnimationFrame(animate);
@@ -169,26 +144,18 @@ function animate() {
   var delta = clock.getDelta();
   if (mixer != null) mixer.update(delta);
 
-  // // Rotate modelA and modelC
-  // if (modelA) {
-  //   modelA.rotation.y = modelARot.y;
-  // }
-
-  // if (modelC) {
-  //   modelC.rotation.x = modelCRot.x;
-  // }
-
   // Check if all models have loaded
   if (modelA && modelB && modelC && modelD) {
     // Update modelD rotation based on modelB and modelC rotation
     modelD.rotation.x = -modelCRot.x - modelBRot.x;
 
+
     // Render the scene
     renderer.render(scene, camera);
-  } 
+
+  }
 }
 
 animate();
-
 
 
