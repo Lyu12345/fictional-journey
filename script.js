@@ -2,7 +2,7 @@ import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threej
 import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/loaders/GLTFLoader.js';
 import { GUI } from 'https://threejsfundamentals.org/threejs/../3rdparty/dat.gui.module.js';
-
+// ver 007
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
