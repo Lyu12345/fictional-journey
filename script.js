@@ -83,6 +83,14 @@ loader.load("./assets/Arm_024d.gltf", function (gltf) {
 
 const clock = new THREE.Clock();
 
+// On window resize, adjust camera aspect ratio and renderer size
+window.addEventListener('resize', function () {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+
 // function render() {
 //   requestAnimationFrame(render);
 //   var delta = clock.getDelta();
