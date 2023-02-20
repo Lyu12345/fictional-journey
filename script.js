@@ -161,17 +161,23 @@ function animate() {
   var delta = clock.getDelta();
   if (mixer != null) mixer.update(delta);
 
-  // Rotate modelA and modelC
-  if (modelA) {
-    modelA.rotation.y = modelARot.y;
-  }
+  // // Rotate modelA and modelC
+  // if (modelA) {
+  //   modelA.rotation.y = modelARot.y;
+  // }
 
-  if (modelC) {
-    modelC.rotation.x = modelCRot.x;
-  }
+  // if (modelC) {
+  //   modelC.rotation.x = modelCRot.x;
+  // }
 
-  // Render the scene
-  renderer.render(scene, camera);
+  // Check if all models have loaded
+  if (modelA && modelB && modelC && modelD) {
+    // Update modelD rotation based on modelB and modelC rotation
+    modelD.rotation.x = -modelCRot.x - modelBRot.x;
+
+    // Render the scene
+    renderer.render(scene, camera);
+  } 
 }
 
 animate();
